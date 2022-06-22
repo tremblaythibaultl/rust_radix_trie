@@ -49,10 +49,13 @@ where
 
 use std::fmt::Debug;
 
-pub fn get_node_func<'r, K: TrieKey + Debug, V: Debug>(trie: &'r TrieNode<K, V>, key: &K) -> Option<&'r TrieNode<K, V>> {
+pub fn get_node_func<'r, K: TrieKey + Debug + Clone, V: Debug + Clone>(trie: &'r TrieNode<K, V>, key: &K) -> Vec<(TrieNode<K, V>, Option<usize>)> {
     let nv = key.encode();
+
+    let mut path = vec![];
+
     if nv.len() == 0 {
-        return Some(trie);
+        return path;
     }
 
     let mut prev = trie;
@@ -61,22 +64,26 @@ pub fn get_node_func<'r, K: TrieKey + Debug, V: Debug>(trie: &'r TrieNode<K, V>,
     loop {
         let bucket = nv.get(depth) as usize;
         let current = prev;
-        println!("{:?}", current.key);
+        
+        path.push((current.clone(), Some(bucket)));
+
         if let Some(ref child) = current.children[bucket] {
             match match_keys(depth, &nv, &child.key) {
                 KeyMatch::Full => {
-                    return Some(child);
+                    path.push((*child.clone(), None));
+                    return path;
                 }
                 KeyMatch::SecondPrefix => {
                     depth += child.key.len();
                     prev = child;
                 }
                 _ => {
-                    return None;
+                    path.push((*child.clone(), None));
+                    return path;
                 }
             }
         } else {
-            return None;
+            return path;
         }
     }
 }

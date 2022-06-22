@@ -53,7 +53,7 @@ pub struct Trie<K, V> {
     /// The number of values stored in this sub-trie (this node and all descendants).
     length: usize,
     /// The main content of this trie.
-    node: TrieNode<K, V>,
+    pub node: TrieNode<K, V>,
 }
 
 /// Immutable view of a sub-tree a larger trie.

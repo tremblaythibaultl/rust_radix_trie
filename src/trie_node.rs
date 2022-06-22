@@ -26,10 +26,11 @@ pub struct TrieNode<K, V> {
     /// dictates the child's bucket.
     pub children: [Option<Box<TrieNode<K, V>>>; BRANCH_FACTOR],
 
+    pub polynomial: Option<Polynomial>,
 
     pub commitment: Option<Commitment>,
 
-    pub poly: Option<Polynomial>,
+    pub hash: Option<Vec<u8>>,
 }
 
 #[derive(Debug, Clone)]
@@ -51,7 +52,8 @@ where
             children: Default::default(),
             child_count: 0,
             commitment: None,
-            poly: None,
+            polynomial: None,
+            hash: None,
         }
     }
 
@@ -67,7 +69,8 @@ where
             children: Default::default(),
             child_count: 0,
             commitment: None,
-            poly: None,
+            polynomial: None,
+            hash: None,
         }
     }
 
@@ -235,7 +238,8 @@ where
             children,
             child_count,
             commitment: None,
-            poly: None,
+            polynomial: None,
+            hash: None,
         }));
     }
     #[inline]
